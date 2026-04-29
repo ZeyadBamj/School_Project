@@ -23,12 +23,13 @@ def main():
     lesson_repo = LessonRepository(DB_PATH)
     service = StudentService(student_repo, lesson_repo)
 
+    # GUI
     root = tk.Tk()
     MainWindow(root, service)
-
     root.mainloop()
 
-
+    # CLI
+    #بعد اغلاق الGUI يمكنك استعمال CLI
     while True:
         print("""\n--- Main List ---
 (a) -> ADD Student
