@@ -16,6 +16,10 @@ class Model:
         return {key: value for key, value in cls.__dict__.items() if isinstance(value, Field)}
 
     @classmethod
+    def get_table_constraints(cls):
+        return []
+
+    @classmethod
     def create_table(cls):
         if not cls.connection:
             return
@@ -29,7 +33,9 @@ class Model:
             if hasattr(field, 'get_constraint'):
                 constraints.append(field.get_constraint(name))
 
-        all_sql = columns_sql + constraints
+        table_constraints = cls.get_table_constraints()
+
+        all_sql = columns_sql + constraints + table_constraints
         query = f"CREATE TABLE IF NOT EXISTS {cls._get_table_name()} ({', '.join(all_sql)})"
 
         cls.connection.execute(query)

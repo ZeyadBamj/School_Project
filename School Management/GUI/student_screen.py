@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-
+from validator import InputValidator as Valid
 from GUI.update_window import UpdateWindow
 from Repository_Pattern.student_service import StudentService
 
@@ -41,7 +41,7 @@ class StudentScreen:
         self.grade_entry = tk.Entry(self.window)
         self.grade_entry.pack()
 
-        tk.Label(self.window, text="Registration Date").pack()
+        tk.Label(self.window, text="Registration Date (DD-MM-YYYY)").pack()
         self.date_entry = tk.Entry(self.window)
         self.date_entry.pack()
 
@@ -85,7 +85,7 @@ class StudentScreen:
                 self.last_entry.get(),
                 int(self.age_entry.get()),
                 self.grade_entry.get(),
-                self.date_entry.get()
+                Valid.gui_date_input(self.date_entry.get()),
             )
 
             lessons = self.lessons_entry.get().split(',')

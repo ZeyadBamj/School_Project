@@ -15,3 +15,9 @@ class Lessons(Model):
 class Student_lessons(Model):
     student_id = ForeignKeyField(Students)
     lesson_id = ForeignKeyField(Lessons)
+
+    @classmethod
+    def get_table_constraints(cls):
+        return [
+            "UNIQUE(student_id, lesson_id)"
+        ]

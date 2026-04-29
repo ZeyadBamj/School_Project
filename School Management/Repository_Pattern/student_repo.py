@@ -52,7 +52,6 @@ class StudentRepository(IStudentRepository):
             VALUES (?, ?, ?, ?, ?, ?)
         """, (s.student_id, s.first_name, s.last_name, s.age, s.grade, s.registration_date))
         last_id = cursor.lastrowid
-        conn.commit()
         return last_id
 
     def delete(self, student_id):

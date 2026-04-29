@@ -1,3 +1,5 @@
+from sqlite3 import IntegrityError
+from DB_and_Related.model import Model
 from DB_and_Related.tables import Students
 from Repository_Pattern.lesson_repo import LessonRepository
 from Repository_Pattern.student_repo import StudentRepository
@@ -8,23 +10,33 @@ class StudentService:
         self.student_repo = student_repo
         self.lesson_repo = lesson_repo
 
+
     def add_student(self, data, lesson_list):
+        conn = Model.connection
+
         student_id = data[0]
         if self.student_repo.exists(student_id):
             return False, "❌ Can't ADD, Student Exists Before"
 
-        student_obj = Students(student_id=data[0], first_name=data[1], last_name=data[2],
-                               age=data[3], grade=data[4], registration_date=data[5])
-        self.student_repo.add(student_obj)
-        student_pk_id  = self.student_repo.get_pk_by_student_id(student_id)
+        try:
+            with conn:
+                student_obj = Students(student_id=data[0], first_name=data[1], last_name=data[2],
+                                       age=data[3], grade=data[4], registration_date=data[5])
+                self.student_repo.add(student_obj)
+                student_pk_id = self.student_repo.get_pk_by_student_id(student_id)
 
-        for lesson_name in lesson_list:
-            lesson_name = lesson_name.strip()
-            if not lesson_name: continue
-            lesson_id = self.lesson_repo.get_or_create(lesson_name)
-            self.lesson_repo.assign_to_student(student_pk_id, lesson_id)
+                for lesson_name in lesson_list:
+                    lesson_name = lesson_name.strip()
+                    if not lesson_name: continue
+                    lesson_id = self.lesson_repo.get_or_create(lesson_name)
+                    self.lesson_repo.assign_to_student(student_pk_id, lesson_id)
 
-        return True, "✅ ADD Successfully"
+            return True, "✅ ADD Successfully"
+        except IntegrityError:
+            return False, " ❌ Duplicate Lesson Assignment Detected"
+
+        except Exception as e:
+            return False, f"❌ Error: {str(e)}"
 
     def delete_student(self, student_id):
         student = self.student_repo.get_by_student_id(student_id)

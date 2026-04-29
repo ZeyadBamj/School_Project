@@ -5,7 +5,6 @@ class DataBase:
         self.path = path
         self.connection = None
         self.connected = False
-        self.connect()
 
     def connect(self):
         try:

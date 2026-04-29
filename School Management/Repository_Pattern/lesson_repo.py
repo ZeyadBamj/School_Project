@@ -39,7 +39,6 @@ class LessonRepository(ILessonRepository):
         else:
             cursor.execute("INSERT INTO lessons (name) VALUES (?)", (lesson_name,))
             result = cursor.lastrowid
-            conn.commit()
 
         return result
 
@@ -47,7 +46,6 @@ class LessonRepository(ILessonRepository):
         conn, cursor = self._get_conn_and_cursor()
         cursor.execute("INSERT INTO student_lessons (student_id, lesson_id) "
                        "VALUES (?, ?)", (student_pk_id, lesson_id))
-        conn.commit()
 
     def get_by_student(self, student_id):
         conn, cursor = self._get_conn_and_cursor()
@@ -62,4 +60,3 @@ class LessonRepository(ILessonRepository):
     def clear_student_lessons(self, student_id):
         conn, cursor = self._get_conn_and_cursor()
         cursor.execute("DELETE FROM student_lessons WHERE student_id = ( SELECT id FROM students WHERE student_id = ? )", (student_id,))
-        conn.commit()
